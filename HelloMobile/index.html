@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World!</title>
+  <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #broswer {
+      width: 80%;
+      height: 80%;
+      border: red 2px solid;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Hello World!</h1>
+  We are using node
+  <script>document.write(process.versions.node)</script>,
+  Chrome
+  <script>document.write(process.versions.chrome)</script>,
+  and Electron
+  <script>document.write(process.versions.electron)</script>.
+  <webview id="broswer" src="app.html" nodeintegration preload="preload.js" disableblinkfeatures></webview>
+  <script>
+    const { ipcRenderer } = require('electron')
+    ipcRenderer.on('replace-console-objec', (event, arg) => {
+      console.log('asynchronous-reply:', arg) // prints "pong"
+      event.returnValue = undefined
+    })
+
+    let loaded = false
+    const webview = document.querySelector('webview')
+    console.log("%O", webview)
+    
+    webview.addEventListener('dom-ready', () => {
+      // if (loaded) {
+      //   webview.openDevTools()
+      // } else {
+      //   setTimeout(() => {
+      //     loaded = true
+      //     webview.loadURL('http://localhost:8899/', {
+      //       disableblinkfeatures: true
+      //     })
+      //   }, 1000 * 10);
+      // }]
+      // webview.executeJavaScript(`
+      // console.log(document, document.body)
+      // let meta = document.querySelector('meta[http-equiv="Content-Security-Policy"]')
+      // console.log(meta)
+      // if(meta==null){
+      //   meta = document.createElement('meta')
+      //   meta.setAttribute('http-equiv', 'Content-Security-Policy')
+      //   meta.setAttribute('content', "script-src 'self' 'unsafe-inline';")
+      //   document.head.appendChild(meta)
+      // } else {
+      //   const content = meta.getAttribute('content')
+      //   if (content != "script-src 'self' 'unsafe-inline';") {
+      //     meta = document.createElement('meta')
+      //     meta.setAttribute('http-equiv', 'Content-Security-Policy')
+      //     meta.setAttribute('content', "script-src 'self' 'unsafe-inline';")
+      //     document.head.appendChild(meta)
+      //   }
+      // }
+      // `, true)
+
+      // webview.executeJavaScript(`window.console=${window.console}`)
+
+
+      // setTimeout(() => {
+        webview.openDevTools()
+      // }, 3000)
+    })
+  </script>
+</body>
+
+</html>

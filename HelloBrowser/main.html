@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: #444444;
+        }
+    </style>
+</head>
+
+<body>
+    <button type="button" onclick="sendSync()">send</button>
+    <button type="button" onclick="reloadView()">reload</button>
+    <script>
+        const { ipcRenderer } = require('electron')
+        ipcRenderer.on('asynchronous-reply', (event, arg) => {
+            console.log('asynchronous-reply:', arg) // prints "pong"
+        })
+        ipcRenderer.send('asynchronous-message', 'ping')
+
+        function sendSync() {
+            console.log('sendSync:', ipcRenderer.sendSync('synchronous-message', 'ping'))
+        }
+        
+        function reloadView() {
+            console.log('reloadView:', ipcRenderer.sendSync('synchronous-message', 'reload'))
+        }
+    </script>
+</body>
+
+</html>
